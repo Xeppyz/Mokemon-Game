@@ -1,0 +1,103 @@
+@import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@300..700&display=swap');
+
+
+body{
+    margin: 0;
+    padding: 0;
+    font-family: 'Roboto', sans-serif;
+    background-color: thistle;
+        font-family: "Fredoka", sans-serif;
+        font-optical-sizing: auto;
+        font-variation-settings:
+          "wdth" 100;
+      
+      
+}
+
+.tittle{
+    color: black;
+   
+}
+
+.subtitle{
+    color: black;
+    font-size: 20px;
+}
+
+#select-pet{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+#reset-game{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 20px;
+
+}
+
+.card-pet{
+    width: 250px;
+    height: 150px;
+    background-color: #11668f;
+    padding: 10px;
+    box-sizing: border-box;
+    margin: 10px;
+    border: 1px solid hotpink;
+    box-shadow: inset 0 0 10px transparent;
+    border-radius: 15px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+}   
+
+.card-pet:hover{
+    box-shadow: inset 0 0 10px blue;
+}
+
+.card-pet img{
+    width: 80px;
+}
+
+input{
+    display: none;
+}
+
+.button-pet{
+    width: 150px;
+    height: 30px;
+    background-color: teal;
+    color: white;
+    border-radius: 16px;
+    cursor: pointer;
+   
+    
+}
+
+.button-reset{
+    width: 150px;
+    height: 30px;
+    background-color: red;
+    color: white;
+    border-radius: 16px;
+    cursor: pointer;
+   
+
+}
+
+.button-reset:hover{
+    background-color: rgb(28, 14, 14);
+}
+
+.button-pet:hover{
+    background-color: hotpink;
+}
+
+.cards{
+    display: flex;
+    gap: 10px;
+}
