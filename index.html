@@ -4,12 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>GAME BLITZARCARD</title>
-    <script src="./js/select-mokepon.js"></script>
     <link rel="stylesheet" href="css/style.css">
-   
 </head>
-<body>
 
+<body>
     <section id="select-pet">
         <h1 class="tittle">BlitzarCard</h1>
         <h2 class="subtitle">Choose your pet</h2>
@@ -42,11 +40,8 @@
     <section id="select-attack">
         <h1 class="tittle">BlitzarCard</h1>
         <h2>Choose your attack</h2>
-
-        <p>Your pet <span id="player-pet"></span> has <span id="lives-player">3</span> lives</p>
-        <p>the enemy's <span id="enemys-pet"></span> has <span id="lives-enemys">3</span> lives</p>
-
         
+        <div>
             <button id="btn-fire">
                 Fuego
             </button>
@@ -58,23 +53,32 @@
             <button id="btn-leef">
                 Planta
             </button>
+        </div>
 
+        <div id="messages">
+            <div class="messages-grid">
+                <div id="attack-player"></div>
+                <div id="attack-enemy"></div>
+                <div id="result"></div>
+            </div>
+        </div>
+
+        <section id="reset-game">
+            <button class="button-reset" id="btn-reset">try again</button>
+        </section>
+
+        <div>
+        <p>Your pet <span id="player-pet"></span> has <span id="lives-player">3</span> lives</p>
+        <p>the enemy's <span id="enemys-pet"></span> has <span id="lives-enemys">3</span> lives</p>
+        </div>
+        
+                 
     </section>
-
-    <section id="messages">
-
-    </section>
-
-
-    <section id="reset-game">
-        <button class="button-reset" id="btn-reset">try again</button>
-    </section>
-   
-    </p>
 
     
+   
 
-
+    <script src="./js/select-mokepon.js"></script>
 </body>
 
 

@@ -1,44 +1,60 @@
+const selectAttack = document.getElementById('select-attack')
+const btnPet = document.getElementById('btn-pet')
+const btnFire = document.getElementById('btn-fire')
+const btnReset = document.getElementById('btn-reset')
+const btnWater = document.getElementById('btn-water')
+const btnEarth = document.getElementById('btn-leef')
+
+const selectPet = document.getElementById('select-pet')
+
+const mokepon1 = document.getElementById('zancudo')
+const mokepon2 = document.getElementById('perrozompopo')
+const mokepon3 = document.getElementById('zanate')
+
+const spanmokenPlayer = document.getElementById('player-pet')
+
+const spanmokenEnemy = document.getElementById('enemys-pet')
+
+const spanLivesPlayer = document.getElementById('lives-player')
+const spanLivsEnemy = document.getElementById('lives-enemys')
+
+const message = document.getElementById('result')
+
+
 let attackPlayer
 let attackEnemys
 
 let playerLives = 3
 let EnemyLives = 3
 
-function initGame() {
 
-    let selectAttack = document.getElementById('select-attack')
+class Mokepon{
+    constructor(name, image, lives) {
+        this.name = name
+        this.image = image
+        this.lives = lives
+    }
+}
+let zancudo = new Mokepon('Zancudo', './assets/img/firee.png', 3)
+let perrozompopo = new Mokepon('Perrozompopo', './assets/img/perrozompopo.png', 3)
+let zanate = new Mokepon('Zanate', './assets/img/zanate.png', 3)
+console.log(zancudo, perrozompopo, zanate)
+
+function initGame() { 
     selectAttack.style.display = 'none'
-    let btnPet = document.getElementById('btn-pet')
-    btnPet.addEventListener('click', selectMokepon)
-    let btnFire = document.getElementById('btn-fire')
-    btnFire.addEventListener('click', attackFire)
-    let btnWater = document.getElementById('btn-water')
-    btnWater.addEventListener('click', attackWater)
-    let btnEarth = document.getElementById('btn-leef')
-    btnEarth.addEventListener('click', attackLeef )
-
-    let btnReset = document.getElementById('btn-reset')
+    btnPet.addEventListener('click', selectMokepon) 
+    btnFire.addEventListener('click', attackFire)  
+    btnWater.addEventListener('click', attackWater)  
+    btnEarth.addEventListener('click', attackLeef )   
     btnReset.addEventListener('click', resetGame)
 
 }
 
 
 function selectMokepon() {
-    
-    let selectPet = document.getElementById('select-pet')
+
     selectPet.style.display = 'none'
-     
-    let selectAttack = document.getElementById('select-attack')
     selectAttack.style.display = 'block'
-
-    let mokepon1 = document.getElementById('zancudo')
-    let mokepon2 = document.getElementById('perrozompopo')
-    let mokepon3 = document.getElementById('zanate')
-    let mokepon4 = document.getElementById('chupacabra')
-    let mokepon5 = document.getElementById('llorona')
-
-    let spanmokenPlayer = document.getElementById('player-pet')
-
     if(mokepon1.checked) {
         spanmokenPlayer.innerHTML = 'Zancudo'
     }
@@ -47,12 +63,6 @@ function selectMokepon() {
     }
     else if(mokepon3.checked) {
        spanmokenPlayer.innerHTML = 'Zanate'
-    }
-    else if(mokepon4.checked) {
-        spanmokenPlayer.innerHTML = 'Chupacabra'
-    }
-    else if(mokepon5.checked) {
-        spanmokenPlayer.innerHTML = 'Llorona'
     }else {
         alert('You must select a mokepon')
     }
@@ -62,9 +72,6 @@ function selectMokepon() {
  function selectEnemysPet()   {
     
     let random = randomMokepon(1, 5)
-    let spanmokenEnemy = document.getElementById('enemys-pet')
-
-  
 
     if(random === 1) {
         spanmokenEnemy.innerHTML = 'Zancudo'
@@ -127,10 +134,7 @@ function attackEnemy() {
 }
 
 
-function combat() {
-        let spanLivesPlayer = document.getElementById('lives-player')
-        let spanLivsEnemy = document.getElementById('lives-enemys')
-        
+function combat() { 
         if(attackEnemys == attackPlayer) {
             createMessage('TIE')
 
@@ -195,7 +199,7 @@ function resetGame() {
 
 
 function createMessage(result) {
-    let message = document.getElementById('messages')
+    
     let paragraph = document.createElement ('p')
     paragraph.innerHTML = `Your attack is ${attackPlayer} and the enemy attack is ${attackEnemys} + ${result}`
     message.appendChild(paragraph)
