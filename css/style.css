@@ -101,3 +101,136 @@ input{
     display: flex;
     gap: 10px;
 }
+
+/* Mensajes de ataques organizados en grid bidimensional */
+#messages {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+.messages-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: auto auto;
+    gap: 10px;
+    width: 100%;
+    max-width: 400px;
+    background: #fff8fc;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    padding: 12px;
+    align-items: center;
+}
+
+#attack-player {
+    grid-column: 1 / 2;
+    grid-row: 1 / 2;
+    text-align: center;
+    font-weight: 600;
+    color: #11668f;
+}
+#attack-enemy {
+    grid-column: 2 / 3;
+    grid-row: 1 / 2;
+    text-align: center;
+    font-weight: 600;
+    color: #b22222;
+}
+#result {
+    grid-column: 1 / 3;
+    grid-row: 2 / 3;
+    text-align: center;
+    font-size: 1.1em;
+    font-weight: bold;
+    color: #333;
+    min-height: 32px;
+}
+
+/* Botones de ataque estilo card */
+#select-attack > div:first-child {
+    display: flex;
+    flex-direction: row !important;
+    justify-content: space-between;
+    align-items: stretch;
+    gap: 18px;
+    margin-bottom: 18px;
+    width: 100%;
+    max-width: 500px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+#btn-fire, #btn-water, #btn-leef {
+    background: linear-gradient(135deg, #f7cac9 0%, #92a8d1 100%);
+    border: none;
+    border-radius: 18px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.10);
+    color: #222;
+    font-size: 1.1em;
+    font-weight: 600;
+    padding: 18px 32px;
+    cursor: pointer;
+    transition: transform 0.12s, box-shadow 0.12s, background 0.2s;
+    outline: none;
+    min-width: 110px;
+    min-height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    letter-spacing: 1px;
+}
+
+#btn-fire {
+    background: linear-gradient(135deg, #ff9966 0%, #ff5e62 100%);
+    color: #fff;
+}
+#btn-water {
+    background: linear-gradient(135deg, #56ccf2 0%, #2f80ed 100%);
+    color: #fff;
+}
+#btn-leef {
+    background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+    color: #fff;
+}
+
+#btn-fire:hover, #btn-water:hover, #btn-leef:hover {
+    transform: translateY(-4px) scale(1.04);
+    box-shadow: 0 6px 18px rgba(0,0,0,0.18);
+    filter: brightness(1.08);
+}
+
+@media (max-width: 600px) {
+    #select-attack > div:first-child {
+        flex-direction: row !important;
+        gap: 8px;
+        align-items: stretch;
+        max-width: 98vw;
+    }
+    #btn-fire, #btn-water, #btn-leef {
+        width: 100%;
+        min-width: 0;
+        padding: 12px 0;
+        font-size: 0.95em;
+    }
+}
+
+@media (max-width: 700px) {
+    .messages-grid {
+        max-width: 98vw;
+        padding: 8px;
+        gap: 6px;
+    }
+}
+@media (max-width: 500px) {
+    .messages-grid {
+        grid-template-columns: 1fr 1fr;
+        grid-template-rows: auto auto;
+        font-size: 0.95em;
+        padding: 4px;
+    }
+    #result {
+        font-size: 1em;
+    }
+}
