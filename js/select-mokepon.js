@@ -26,8 +26,10 @@ let mokepon3
 let btnFire 
 let btnWater 
 let btnEarth 
+let buttons = []
 
 let playerPet
+let playerAttack = []
 
 let attackMokepon
 
@@ -51,21 +53,28 @@ let zanate = new Mokepon('zanate', 'assets/img/firee.png', 3)
 mokepones.push(zancudo, perrozompopo, zanate)
 
 zanate.attack.push(
-    {name: 'SACAOJO', id: 'btn-fire'},
-    {name: 'HUIDA', id: 'btn-water'},
-    {name: 'ALETEO', id: 'btn-leef'}
+    {name: '🔥', id: 'btn-fire'},
+    {name: '🔥', id: 'btn-fire'},
+    {name: '🔥', id: 'btn-fire'},
+    {name: '💧', id: 'btn-water'},
+    {name: '🌿', id: 'btn-leef'}
 )
 
 perrozompopo.attack.push(
-    {name: 'COLAZO', id: 'btn-fire'},
-    {name: 'REGENERACION', id: 'btn-water'},
-    {name: 'MORDISCO', id: 'btn-leef'}
+     {name: '💧', id: 'btn-water'},
+      {name: '💧', id: 'btn-water'},
+       {name: '💧', id: 'btn-water'},
+    {name: '🔥', id: 'btn-fire'},
+    {name: '🌿', id: 'btn-leef'}
 )
 
 zancudo.attack.push(
-    {name: 'SACASANGRE', id: 'btn-fire'},
-    {name: 'DENGUE', id: 'btn-water'},
-    {name: 'VUELO', id: 'btn-leef'}
+    {name: '🌿', id: 'btn-leef'},
+    {name: '🌿', id: 'btn-leef'},
+    {name: '🌿', id: 'btn-leef'},
+    {name: '🔥', id: 'btn-fire'},
+    {name: '💧', id: 'btn-water'},
+  
 )
 
 function initGame() { 
@@ -136,54 +145,57 @@ function renderAttacksButtons(attacks) {
     attacks.forEach((attack) => {
 
         attackMokepon = ` 
-             <button id=${attack.id} >
-                ${attack.name}
-            </button>
+             <button id=${attack.id} class="BAttack" > ${attack.name} </button>
         `
-
         conteinerAttacks.innerHTML += attackMokepon
 })
 
     btnFire = document.getElementById('btn-fire')
-   
     btnWater = document.getElementById('btn-water')
     btnEarth = document.getElementById('btn-leef')
 
-     btnFire.addEventListener('click', attackFire)  
-    btnWater.addEventListener('click', attackWater)  
-    btnEarth.addEventListener('click', attackLeef )   
+    buttons = document.querySelectorAll('.BAttack')
+    
     
 
 
    
 }
 
- function selectEnemysPet()   {
+function frecuencyAttack() {
+    buttons.forEach((button) => {
+        button.addEventListener('click', (e) =>{
+        
+            if(e.target.textContent.trim() === '🔥'){
+                playerAttack.push('fire')
+                console.log(playerAttack)
+                button.style.background = '#112f58'            
+            }else if(e.target.textContent.trim() === '💧'){
+                playerAttack.push('water')
+                console.log(playerAttack)
+                button.style.background = '#112f58'            
+            }else if(e.target.textContent.trim() === '🌿'){
+                playerAttack.push('leef')
+                console.log(playerAttack)
+                button.style.background = '#112f58'            
+            }else{
+                playerAttack.push('earth')
+                console.log(playerAttack)
+                button.style.background = '#112f58'
+            }
+        })
+    })
+}
+
+ function selectEnemysPet() {
     
     let random = randomMokepon(0, mokepones.length -1)
 
     spanmokenEnemy.innerHTML = mokepones[random].name
+    frecuencyAttack()
  }
 
  
-function attackFire() {
-    attackPlayer = 'fire'
-    attackEnemy()
-
-}
-
-function attackWater() {
-    attackPlayer = 'water'
-    attackEnemy()
-
-}
-
-function attackLeef() {
-    attackPlayer = 'leef'
-    attackEnemy()
-
-
-}
 
 function attackEnemy() {
     let randomAttack = randomMokepon(1, 3)
