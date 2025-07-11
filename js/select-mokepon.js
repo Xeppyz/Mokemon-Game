@@ -12,13 +12,17 @@ const spanLivesPlayer = document.getElementById('lives-player')
 const spanLivsEnemy = document.getElementById('lives-enemys')
 const conteinerCards = document.getElementById('conteiner-cards')
 const conteinerAttacks = document.getElementById('conteiner-attacks')
+const sectionViewMap = document.getElementById('view-map')
+const map = document.getElementById('map')
 
 
 const message = document.getElementById('result')
 
+let lienzo = map.getContext('2d')
+
 
 let attackPlayer
-let attackEnemys
+let attackEnemys = []
 let mokeponOptions
 let mokepon1 
 let mokepon2 
@@ -28,15 +32,23 @@ let btnWater
 let btnEarth 
 let buttons = []
 
+let indexAttackPlayer
+let indexAttackEnemy
 let playerPet
 let playerAttack = []
+let enemysAttacks = []
 
 let attackMokepon
 
+let playerWins = 0
+let enemyWins = 0
 let playerLives = 3
 let EnemyLives = 3
 
 let mokepones = []
+
+let mapBackground = new Image()
+mapBackground.src = 'assets/img/mokemap.png'
 
 
 class Mokepon{
@@ -45,6 +57,14 @@ class Mokepon{
         this.image = image
         this.lives = lives
         this.attack = []
+        this.x = 20
+        this.y = 30
+        this.width = 80
+        this.height = 80
+        this.mapImage = new Image()
+        this.mapImage.src = image
+        this.speedX = 0
+        this.speedY = 0
     }
 }
 let zancudo = new Mokepon('zancudo', 'assets/img/leeff.png', 3)
@@ -79,6 +99,8 @@ zancudo.attack.push(
 
 function initGame() { 
     selectAttack.style.display = 'none'
+    sectionViewMap.style.display = 'none'
+
     mokepones.forEach((mokepon) => {
 
         mokeponOptions = `
@@ -104,9 +126,12 @@ function initGame() {
 
 
 function selectMokepon() {
-
     selectPet.style.display = 'none'
-    selectAttack.style.display = 'block'
+    //selectAttack.style.display = 'block'
+    sectionViewMap.style.display = 'flex'
+    map.width = 320;   // ancho en píxeles
+    map.height = 240;  // alto en píxeles
+
     if(mokepon1.checked) {
         spanmokenPlayer.innerHTML = mokepon1.id
         playerPet = mokepon1.id
@@ -121,8 +146,12 @@ function selectMokepon() {
     }else {
         alert('You must select a mokepon')
     }
+    // Asignar el mokepon seleccionado a la variable global
+    selectedMokepon = mokepones.find(m => m.name === playerPet)
+    // Dibuja el mokepon seleccionado en el mapa
+    lienzo.clearRect(0, 0, map.width, map.height)
+    drawCharacter(selectedMokepon)
     findAttacksByPet(playerPet)
-
     selectEnemysPet()
 }
 
@@ -169,22 +198,27 @@ function frecuencyAttack() {
             if(e.target.textContent.trim() === '🔥'){
                 playerAttack.push('fire')
                 console.log(playerAttack)
-                button.style.background = '#112f58'            
+                button.style.background = '#112f58'     
+                button.disabled = true       
             }else if(e.target.textContent.trim() === '💧'){
                 playerAttack.push('water')
                 console.log(playerAttack)
-                button.style.background = '#112f58'            
+                button.style.background = '#112f58'     
+                button.disabled = true       
             }else if(e.target.textContent.trim() === '🌿'){
                 playerAttack.push('leef')
                 console.log(playerAttack)
-                button.style.background = '#112f58'            
+                button.style.background = '#112f58'     
+                button.disabled = true       
             }else{
                 playerAttack.push('earth')
                 console.log(playerAttack)
                 button.style.background = '#112f58'
             }
+                attackEnemy()
         })
     })
+
 }
 
  function selectEnemysPet() {
@@ -192,84 +226,82 @@ function frecuencyAttack() {
     let random = randomMokepon(0, mokepones.length -1)
 
     spanmokenEnemy.innerHTML = mokepones[random].name
+    enemysAttacks = mokepones[random].attack
     frecuencyAttack()
  }
 
  
 
 function attackEnemy() {
-    let randomAttack = randomMokepon(1, 3)
-    if(randomAttack === 1) {
-        attackEnemys = 'fire'
-    }   else if(randomAttack === 2) {
-        attackEnemys = 'water'
-    }   else if(randomAttack === 3) {
-        attackEnemys = 'leef'
+    let randomAttack = randomMokepon(0, enemysAttacks.length -1)
+    if(randomAttack == 0 || randomAttack == 1) {
+        attackEnemys.push('fire')
+    }   else if(randomAttack == 3 || randomAttack == 4) {
+        attackEnemys.push('water')
     }   else {
-        alert('Error')
-    }
+        attackEnemys.push('leef')
+    }   
 
-    combat()
+    console.log(attackEnemys)
+    
+    initFight()
 }
 
+function initFight() {
+    if ( attackEnemys.length == 5) {
+        combat()
+       
+    }
+
+}
+
+function indexBothEnemys(player, enemy){
+     indexAttackPlayer = playerAttack[player]
+     indexAttackEnemy = attackEnemys[enemy]
+}
 
 function combat() { 
-        if(attackEnemys == attackPlayer) {
-            createMessage('TIE')
-
-        }else if(attackPlayer == 'fire' && attackEnemys == 'leef') {
+    for (let i = 0; i < playerAttack.length; i++) {
+        indexBothEnemys(i, i)
+        if(playerAttack[i] === attackEnemys[i]) {
+           createMessage('TIE')
+        } else if(playerAttack[i] === 'fire' && attackEnemys[i] === 'leef') {
             createMessage('WON')
-            EnemyLives--
-            spanLivsEnemy.innerHTML = EnemyLives
-
-        }else if(attackPlayer == 'water' && attackEnemys == 'fire') {
+            playerWins++
+            spanLivesPlayer.innerHTML = playerWins
+        } else if(playerAttack[i] === 'water' && attackEnemys[i] === 'fire') {
             createMessage('WON')
-            EnemyLives--
-            spanLivsEnemy.innerHTML = EnemyLives
-        }else if(attackPlayer == 'earth' && attackEnemys == 'water') {
+            playerWins++
+            spanLivesPlayer.innerHTML = playerWins
+        } else if(playerAttack[i] === 'leef' && attackEnemys[i] === 'water') {
             createMessage('WON')
-            EnemyLives--
-            spanLivsEnemy.innerHTML = EnemyLives
-        }else{
+            playerWins++
+            spanLivesPlayer.innerHTML = playerWins
+        } else {
             createMessage('LOST')
-            playerLives--
-            spanLivesPlayer.innerHTML = playerLives
-        
+            enemyWins++
+            spanLivsEnemy.innerHTML = enemyWins
         }
-
-        checkLives()
-    
+    }
+    checkLives()
 }
 
 function checkLives(){
 
-    if(playerLives == 0){
-    
-        alert('You lost')
-        disableButtons()
-           
+    if(playerWins === enemyWins){
+        alert('It is a tie')
        
-    }else if(EnemyLives == 0){
+
+    }else if(playerWins > enemyWins){
         alert('You win')
-        disableButtons()
-         
+             
+    }else{
+        alert('You lost')
     }
 }
 
 
 
-
-function disableButtons() {
-    let btnFire = document.getElementById('btn-fire')
-    btnFire.disabled = true  
-    let btnWater = document.getElementById('btn-water')
-    btnWater.disabled = true 
-    let btnEarth = document.getElementById('btn-leef')
-    btnEarth.disabled = true 
-
-   
-
-}
 
 function resetGame() {
      location.reload()
@@ -280,7 +312,7 @@ function resetGame() {
 function createMessage(result) {
     
     let paragraph = document.createElement ('p')
-    paragraph.innerHTML = `Your attack is ${attackPlayer} and the enemy attack is ${attackEnemys} + ${result}`
+    paragraph.innerHTML = `Your attack is ${indexAttackPlayer} and the enemy attack is ${indexAttackEnemy} + ${result}`
     message.appendChild(paragraph)
    
 }
@@ -291,5 +323,113 @@ function randomMokepon(min, max) {
 return Math.floor(Math.random() * (max - min + 1) + min)
 }
 
+function drawCharacter(mokepon) {
+    if (mokepon.mapImage.complete) {
+        lienzo.drawImage(mapBackground, 0, 0, map.width, map.height)
+        lienzo.drawImage(mokepon.mapImage, mokepon.x, mokepon.y, mokepon.width, mokepon.height)
+    } else {
+        mokepon.mapImage.onload = function() {
+            lienzo.drawImage(mokepon.mapImage, mokepon.x, mokepon.y, mokepon.width, mokepon.height)
+            lienzo.drawImage(mapBackground, 0, 0, map.width, map.height)
+
+        }
+    }
+}
+
+let intervalMovimiento;
+
+function startGameLoop() {
+    clearInterval(intervalMovimiento);
+    intervalMovimiento = setInterval(updatePosition, 30);
+}
+
+function updatePosition() {
+    if (!selectedMokepon) return;
+    selectedMokepon.x += selectedMokepon.speedX;
+    selectedMokepon.y += selectedMokepon.speedY;
+    lienzo.clearRect(0, 0, map.width, map.height);
+    drawCharacter(selectedMokepon);
+}
+
+function moveUp() {
+    if (!selectedMokepon) return;
+    selectedMokepon.speedY = -5;
+    startGameLoop();
+}
+function moveDown() {
+    if (!selectedMokepon) return;
+    selectedMokepon.speedY = 5;
+    startGameLoop();
+}
+function moveLeft() {
+    if (!selectedMokepon) return;
+    selectedMokepon.speedX = -5;
+    startGameLoop();
+}
+function moveRight() {
+    if (!selectedMokepon) return;
+    selectedMokepon.speedX = 5;
+    startGameLoop();
+}
+function stopMoveY() {
+    if (!selectedMokepon) return;
+    selectedMokepon.speedY = 0;
+    if (selectedMokepon.speedX === 0 && selectedMokepon.speedY === 0) {
+        clearInterval(intervalMovimiento);
+    }
+}
+function stopMoveX() {
+    if (!selectedMokepon) return;
+    selectedMokepon.speedX = 0;
+    if (selectedMokepon.speedX === 0 && selectedMokepon.speedY === 0) {
+        clearInterval(intervalMovimiento);
+    }
+}
 
 window.addEventListener('load', initGame)
+window.addEventListener('keydown', (e) => {
+    if (!selectedMokepon) return;
+    switch (e.key) {
+        case 'ArrowUp':
+        case 'w':
+        case 'W':
+            moveUp();
+            break;
+        case 'ArrowDown':
+        case 's':
+        case 'S':
+            moveDown();
+            break;
+        case 'ArrowLeft':
+        case 'a':
+        case 'A':
+            moveLeft();
+            break;
+        case 'ArrowRight':
+        case 'd':
+        case 'D':
+            moveRight();
+            break;
+    }
+});
+window.addEventListener('keyup', (e) => {
+    if (!selectedMokepon) return;
+    switch (e.key) {
+        case 'ArrowUp':
+        case 'ArrowDown':
+        case 'w':
+        case 'W':
+        case 's':
+        case 'S':
+            stopMoveY();
+            break;
+        case 'ArrowLeft':
+        case 'ArrowRight':
+        case 'a':
+        case 'A':
+        case 'd':
+        case 'D':
+            stopMoveX();
+            break;
+    }
+});
