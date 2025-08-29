@@ -58,6 +58,7 @@ let searchHeight = weightScreen * 600 / 800;
 map.width = weightScreen;
 map.height = searchHeight;
 
+let playerId = null;
 
 // Clase Mokepon modificada
 class Mokepon {
@@ -154,11 +155,11 @@ function initGame() {
 function joinGame(){
     fetch("http://localhost:8080/join")
     .then(function (res){
-      
         if(res.ok){
             res.text()
                     .then(function(respuesta){
                         console.log(respuesta)
+                        playerId = respuesta
                     })
         }
     })
@@ -183,6 +184,8 @@ function selectMokepon() {
     } else {
         alert('You must select a mokepon')
     }
+
+   selectedMokeponApi(playerPet);
     // Asignar el mokepon seleccionado a la variable global
     selectedMokepon = mokepones.find(m => m.name === playerPet)
     // Dibuja el mokepon seleccionado en el mapa
@@ -195,6 +198,25 @@ function selectMokepon() {
 
     findAttacksByPet(playerPet)
 
+}
+
+function selectedMokeponApi(playerPet) {
+    fetch(`http://localhost:8080/mokepon/${playerId}`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            mokepon: playerPet
+        })
+    })
+    .then(response => {
+        if (response.ok) {
+            console.log("Mokepon seleccionado enviado al servidor");
+        } else {
+            console.error("Error al enviar el mokepon seleccionado");
+        }
+    });
 }
 
 
