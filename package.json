@@ -1,0 +1,23 @@
+{
+  "name": "mokemon-game",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Xeppyz/Mokemon-Game.git"
+  },
+  "author": "Xeppyz",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Xeppyz/Mokemon-Game/issues"
+  },
+  "homepage": "https://github.com/Xeppyz/Mokemon-Game#readme",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^5.1.0"
+  }
+}
