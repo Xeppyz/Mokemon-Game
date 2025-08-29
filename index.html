@@ -20,6 +20,20 @@
 
     </section>
 
+    <section id="view-map">
+        <h2 class="subtitle">Travel around the world with your Mokepon</h2>
+        <canvas id="map"></canvas>
+        <div class="controls">
+            <button id="btn-up" onmousedown="moveUp()" onmouseup="stopMoveY()" ontouchstart="moveUp()" ontouchend="stopMoveY()">Up</button>
+            <button id="btn-down" onmousedown="moveDown()" onmouseup="stopMoveY()" ontouchstart="moveDown()" ontouchend="stopMoveY()">Down</button>
+            <button id="btn-left" onmousedown="moveLeft()" onmouseup="stopMoveX()" ontouchstart="moveLeft()" ontouchend="stopMoveX()">Left</button>
+            <button id="btn-right" onmousedown="moveRight()" onmouseup="stopMoveX()" ontouchstart="moveRight()" ontouchend="stopMoveX()">Right</button>
+        </div>
+
+
+
+    </section>
+
     <section id="select-attack">
         <h1 class="tittle">BlitzarCard</h1>
         <h2>Choose your attack</h2>
@@ -40,9 +54,17 @@
             <button class="button-reset" id="btn-reset">try again</button>
         </section>
 
-        <div>
-        <p>Your pet <span id="player-pet"></span> has <span id="lives-player">3</span> lives</p>
-        <p>the enemy's <span id="enemys-pet"></span> has <span id="lives-enemys">3</span> lives</p>
+        <div id="scoreboard">
+            <div class="score-block">
+                <span class="score-label">Your Victories</span>
+                <span class="score-value" id="lives-player">0</span>
+                <span class="score-name" id="player-pet"></span>
+            </div>
+            <div class="score-block">
+                <span class="score-label">Enemy Victories</span>
+                <span class="score-value" id="lives-enemys">0</span>
+                <span class="score-name" id="enemys-pet"></span>
+            </div>
         </div>
         
                  
