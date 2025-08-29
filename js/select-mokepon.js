@@ -59,6 +59,7 @@ map.width = weightScreen;
 map.height = searchHeight;
 
 let playerId = null;
+let selectedMokepon;
 
 // Clase Mokepon modificada
 class Mokepon {
@@ -95,8 +96,9 @@ let zanate = new Mokepon('zanate', 'assets/img/firee.png', 3, 'assets/img/ratigu
 let zancudoEnemy = new Mokepon('zancudo', 'assets/img/leeff.png', 3, 'assets/img/capipepo.png')
 let perrozompopoEnemy = new Mokepon('perrozompopo', 'assets/img/waterr.png', 3, 'assets/img/hipodoge.png')
 let zanateEnemy = new Mokepon('zanate', 'assets/img/firee.png', 3, 'assets/img/ratigueya.png')
-mokepones.push(zancudo, perrozompopo, zanate)
-const enemies = [zancudoEnemy, perrozompopoEnemy, zanateEnemy];
+    mokepones.push(zancudo, perrozompopo, zanate)
+    // Enemies se inicializa vacío, se llenará dinámicamente según el servidor
+    const enemies = [];
 
 zanate.attack.push(
     { name: '🔥', id: 'btn-fire' },
@@ -185,14 +187,54 @@ function selectMokepon() {
         alert('You must select a mokepon')
     }
 
-   selectedMokeponApi(playerPet);
     // Asignar el mokepon seleccionado a la variable global
     selectedMokepon = mokepones.find(m => m.name === playerPet)
+    selectedMokeponApi(playerPet);
     // Dibuja el mokepon seleccionado en el mapa
     lienzo.clearRect(0, 0, map.width, map.height)
     drawBackground();
     drawEnemies();  // Dibuja todos los enemigos
     drawCharacter(selectedMokepon); // Dibuja jugador encima
+
+    // Iniciar polling para actualizar enemigos en tiempo real
+    startPollingEnemies();
+function startPollingEnemies() {
+    if (pollingInterval) clearInterval(pollingInterval);
+    pollingInterval = setInterval(getEnemiesPositions, 100); // cada 100ms
+}
+
+function getEnemiesPositions() {
+    if (!selectedMokepon || !playerId) return;
+    fetch(`http://localhost:8080/mokepon/${playerId}/position`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            x: selectedMokepon.x,
+            y: selectedMokepon.y
+        })
+    })
+    .then(res => res.json())
+    .then(({ enemys }) => {
+        // Actualiza el array de enemigos
+        enemies.length = 0;
+        enemys.forEach(enemyData => {
+            if (enemyData.mokepon) {
+                let enemy = new Mokepon(
+                    enemyData.mokepon,
+                    `assets/img/${enemyData.mokepon === 'zancudo' ? 'leeff' : enemyData.mokepon === 'perrozompopo' ? 'waterr' : 'firee'}.png`,
+                    3,
+                    `assets/img/${enemyData.mokepon === 'zancudo' ? 'capipepo' : enemyData.mokepon === 'perrozompopo' ? 'hipodoge' : 'ratigueya'}.png`
+                );
+                enemy.x = enemyData.x;
+                enemy.y = enemyData.y;
+                enemies.push(enemy);
+            }
+        });
+        drawScene();
+    });
+}
 
 
 
@@ -207,15 +249,8 @@ function selectedMokeponApi(playerPet) {
             "Content-Type": "application/json"
         },
         body: JSON.stringify({
-            mokepon: playerPet
+            mokepon: selectedMokepon.name
         })
-    })
-    .then(response => {
-        if (response.ok) {
-            console.log("Mokepon seleccionado enviado al servidor");
-        } else {
-            console.error("Error al enviar el mokepon seleccionado");
-        }
     });
 }
 
@@ -395,7 +430,7 @@ function drawBackground() {
 
 function drawEnemies() {
     enemies.forEach(enemy => {
-        drawCharacter(enemy);
+        enemy.drawMokepon();
     });
 }
 
@@ -410,22 +445,59 @@ function startGameLoop() {
 }
 
 function updatePosition() {
-    if (!selectedMokepon) return;
+    if (!selectedMokepon || !playerId) return;
 
-    // Actualizar posición
     selectedMokepon.x += selectedMokepon.speedX;
     selectedMokepon.y += selectedMokepon.speedY;
 
-    // Limitar al jugador dentro del mapa
-    if (selectedMokepon.x < 0) selectedMokepon.x = 0;
-    if (selectedMokepon.y < 0) selectedMokepon.y = 0;
-    if (selectedMokepon.x + selectedMokepon.width > map.width)
-        selectedMokepon.x = map.width - selectedMokepon.width;
-    if (selectedMokepon.y + selectedMokepon.height > map.height)
-        selectedMokepon.y = map.height - selectedMokepon.height;
+    fetch(`http://localhost:8080/mokepon/${playerId}/position`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            x: selectedMokepon.x,
+            y: selectedMokepon.y
+        })
+    })
+    .then(res => res.json())
+    .then(({ enemys }) => {
+        // Actualiza el array de enemigos
+        enemies.length = 0;
+        enemys.forEach(enemyData => {
+            if (enemyData.mokepon) {
+                let enemy = new Mokepon(
+                    enemyData.mokepon,
+                    `assets/img/${enemyData.mokepon === 'zancudo' ? 'leeff' : enemyData.mokepon === 'perrozompopo' ? 'waterr' : 'firee'}.png`,
+                    3,
+                    `assets/img/${enemyData.mokepon === 'zancudo' ? 'capipepo' : enemyData.mokepon === 'perrozompopo' ? 'hipodoge' : 'ratigueya'}.png`
+                );
+                enemy.x = enemyData.x;
+                enemy.y = enemyData.y;
+                enemies.push(enemy);
+            }
+        });
+        drawScene();
+    });
+}
 
-    // Dibujar toda la escena nuevamente
-    drawScene();
+function sendPositionUpdate(x, y) {
+    fetch(`http://localhost:8080/mokepon/${playerId}/position`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ x, y })
+    })
+        .then(function(res){
+            if(res.ok){
+                res.json()
+                        .then(function({enemys}){
+                            console.log(enemys);
+                        })
+            }
+        })
+    
 }
 
 // Función para dibujar toda la escena
